@@ -1,0 +1,35 @@
+### Requer a extensão "REST Client" (humao.rest-client).
+### Clique em "Send Request" acima de cada bloco.
+
+@host = http://localhost:8000
+
+### Health check
+GET {{host}}/health
+
+### Criar um agente (nasce sem nome e sem autodescrição)
+# @name criar
+POST {{host}}/agent
+
+### Guarda o id do agente criado acima
+@agent = {{criar.response.body.agent_id}}
+
+### Conversar -> deve escolher RESPOND
+POST {{host}}/chat/{{agent}}/message
+Content-Type: application/json
+
+{ "text": "Olá, quem é você?" }
+
+### Pedido explícito de memória -> deve escolher REMEMBER
+POST {{host}}/chat/8b334b00-44f0-4ffc-a247-3ed9dd3b0194/message
+Content-Type: application/json
+
+{ "text": "lembre-se que eu moro em Joinville" }
+
+### Entrada vazia -> deve escolher WAIT (esperar é válido)
+POST {{host}}/chat/8b334b00-44f0-4ffc-a247-3ed9dd3b0194/message
+Content-Type: application/json
+
+{ "text": "   " }
+
+### Ver o estado do agente
+GET {{host}}/agent/{{agent}}

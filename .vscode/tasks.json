@@ -1,0 +1,43 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "DB: subir Postgres (docker)",
+      "type": "shell",
+      "command": "docker compose up -d postgres",
+      "problemMatcher": []
+    },
+    {
+      "label": "DB: criar banco de testes",
+      "type": "shell",
+      "command": "docker compose exec -T postgres psql -U trajectory -d trajectory_dev -c \"SELECT 1 FROM pg_database WHERE datname='trajectory_test'\" | grep -q 1 || docker compose exec -T postgres psql -U trajectory -d trajectory_dev -c \"CREATE DATABASE trajectory_test OWNER trajectory\"; docker compose exec -T postgres psql -U trajectory -d trajectory_test -c \"CREATE EXTENSION IF NOT EXISTS vector\"",
+      "dependsOn": "DB: subir Postgres (docker)",
+      "problemMatcher": []
+    },
+    {
+      "label": "DB: aplicar migrations",
+      "type": "shell",
+      "command": "alembic upgrade head",
+      "options": { "cwd": "${workspaceFolder}/backend" },
+      "dependsOn": "DB: criar banco de testes",
+      "problemMatcher": []
+    },
+    {
+      "label": "Setup completo",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "DB: subir Postgres (docker)",
+        "DB: criar banco de testes",
+        "DB: aplicar migrations"
+      ],
+      "problemMatcher": [],
+      "group": { "kind": "build", "isDefault": true }
+    },
+    {
+      "label": "DB: parar Postgres",
+      "type": "shell",
+      "command": "docker compose stop postgres",
+      "problemMatcher": []
+    }
+  ]
+}

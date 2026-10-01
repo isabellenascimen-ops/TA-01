@@ -1,0 +1,31 @@
+{
+  // Interpretador do venv local. Se você usar Dev Container, o VS Code
+  // ignora isto e usa o Python do container.
+  "python.defaultInterpreterPath": "${workspaceFolder}/backend/.venv/bin/python",
+
+  // Testes: o rootDir é backend/, porque é lá que está o pytest.ini
+  // e de onde "import app.*" resolve corretamente.
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestArgs": ["backend"],
+  "python.testing.cwd": "${workspaceFolder}/backend",
+
+  // Faz o Pylance enxergar "app.*" sem marcar import não resolvido.
+  "python.analysis.extraPaths": ["${workspaceFolder}/backend"],
+  "python.analysis.autoImportCompletions": true,
+
+  // Carrega o .env automaticamente no terminal e nos testes.
+  "python.envFile": "${workspaceFolder}/.env",
+
+  "[python]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    }
+  },
+
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.pytest_cache": true
+  }
+}
